@@ -1,0 +1,5 @@
+h
+loadfile main.hex
+r
+g
+q
