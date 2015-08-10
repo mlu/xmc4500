@@ -32,6 +32,7 @@ vectorsxmc4500.c			Interrupt vectors
 startup.c					Reset handler
 /* Note revision AA and AB of the processor has a bug and the Infeneon startup_XMC4500.S must be used */
 /* The latest boards I bought has revision AC of the processor */
+/* Update this is not an issue if both normal code and interrupts use main stack pointer MSP */
 
 System_XMC4500.c/h			Clock and lowlevel initialisation (Infenieon code from DAVE, I plan to rewrite them)
 syscalls.c					some function stubs to make the C library happy
