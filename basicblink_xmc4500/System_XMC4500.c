@@ -152,7 +152,7 @@ uint32_t AllowPLLInitByStartup(){
 #define SCU_USB_CLOCK_SETUP              1
 #if (CLOCK_CRYSTAL_FREQUENCY == 12000000)
 #define 	SCU_USBPLL_PDIV	1		
-#define 	SCU_USBPLL_NDIV	31		
+#define 	SCU_USBPLL_NDIV	63		
 #define 	SCU_USBDIV	3		
 #endif
 
@@ -163,13 +163,13 @@ uint32_t AllowPLLInitByStartup(){
 //                     <0=> 3 WS
 //                     <1=> 4 WS
 //                     <2=> 5 WS     
-//										 <3=> 6 WS
+//                     <3=> 6 WS
 // </e>
 // 
 */
 
 #define PMU_FLASH             1
-#define	PMU_FLASH_WS					0x00000000
+#define	PMU_FLASH_WS      0x00000000
 
 
 /*--------------------- CLOCKOUT Configuration -------------------------------
@@ -259,14 +259,14 @@ void SystemInit(void)
 	SCU_CLK->EXTCLKCR	|= SCU_CLOCKOUT_DIV<<16;
 	
 	if (SCU_CLOCKOUT_PIN) {
-							PORT0->IOCR8 = 0x00000088;   /*P0.8 --> ALT1 select +  HWSEL */
-						    PORT0->HWSEL &= (~PORT0_HWSEL_HW8_Msk);
-						    //PORT0->PDR1 &= (~PORT0_PDR1_PD8_Msk);  /*set to strong driver */
-							}
+		PORT0->IOCR8 = 0x00000088;   /*P0.8 --> ALT1 select +  HWSEL */
+		PORT0->HWSEL &= (~PORT0_HWSEL_HW8_Msk);
+		//PORT0->PDR1 &= (~PORT0_PDR1_PD8_Msk);  /*set to strong driver */
+	}
 	else {
 			PORT1->IOCR12 = 0x88000000;                    /*P1.15--> ALT1 select */
 		    //PORT1->PDR1 &= (~PORT1_PDR1_PD15_Msk);  /*set to strong driver */
-			}
+	}
 	
 	#endif
 	
@@ -281,13 +281,10 @@ void SystemInit(void)
 	 *----------------------------------------------------------------------------*/
 	SystemCoreClockUpdate();/*!< System Clock Frequency (Core Clock)*/
 	
-	
 	/* Setup the USB PL */ 
 	#if SCU_USB_CLOCK_SETUP
 	USBClockSetup();
 	#endif
-	
-	
 	
 }
 

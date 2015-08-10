@@ -2,7 +2,7 @@
 #include <xmc4500.h>
 #include <core_cm4.h>
 
-/* Initialize segments */
+/* Variables set in the loeader script for memory layout */
 extern uint32_t _sfixed;
 extern uint32_t _efixed;
 extern uint32_t _etext;
@@ -17,10 +17,31 @@ int main(void);
 
 void __libc_init_array(void);
 
+volatile uint32_t tickflag;
+volatile uint32_t systick_count;
+
+void SysTick_Handler(void)
+{
+	tickflag = 1;
+	systick_count++;
+}
+
+void initSysTick()
+{		
+	// Use processor clock, enable interrupt request and enable counter
+	PPB->SYST_CSR |= 0x7; 
+	// Set the reload register (timebase in effect)
+	PPB->SYST_RVR = SystemCoreClock/1000-1; //16000000 -1; // generate 1/2 second time base
+	PPB->SYST_CVR=5; // Start the counter at a value close to zero
+	__enable_irq();
+	PORT1->OUT = 1;
+}
+
 void Reset_Handler(void)
 {
 	uint32_t *pSrc, *pDest;
 
+	/* Chip dependent clock and memory setup */
     SystemInit();
 
 	/* Initialize the relocate segment */
@@ -41,14 +62,12 @@ void Reset_Handler(void)
 	/* Set the vector table base address */
 	pSrc = (uint32_t *) & _sfixed;
 	SCB->VTOR = ((uint32_t) pSrc & SCB_VTOR_TBLOFF_Msk);
-/*
-	if (((uint32_t) pSrc >= IRAM_ADDR) && ((uint32_t) pSrc < IRAM_ADDR + IRAM_SIZE)) {
-		SCB->VTOR |= 1 << SCB_VTOR_TBLBASE_Pos;
-	}
-*/
     
 	/* Initialize the C library */
 	__libc_init_array();
+
+	/* 1 millsecond timer tick */
+	initSysTick();
 
 	/* Branch to main function */
 	main();
