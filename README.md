@@ -14,6 +14,7 @@ https://www.segger.com/jlink-software-beta-version.html
 GCC crosscompilation toolchain
 https://launchpad.net/gcc-arm-embedded
 
+I use Geany for editing, running make commands from inside the editor. I have not tried to use the project features of Geany, for me a project is simply defined by a makefile and some sourcefiles in a folder. This setup works well on MacOSX and Fedora. 
 
 basicblink_xmc4500
 ==================
@@ -44,4 +45,4 @@ xmc4500_gpio.h				Some extra defins for GPIO
 
 main.cpp					The main program
 
-For me it works to do make clean, make, make flash. But this might depe
+For me it works to do make clean, make, make flash. But this might depend on your particular setup.
